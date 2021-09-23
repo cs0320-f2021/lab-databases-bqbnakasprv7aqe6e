@@ -39,28 +39,26 @@ public class Database {
     // this line loads the driver manager class, and must be
     // present for everything else to work properly
     Class.forName("org.sqlite.JDBC");
-    String urlToDB = "jdbc:sqlite:" + "<path/to/db>.sqlite3";
-    Connection conn = DriverManager.getConnection(urlToDB);
+    String urlToDB = "jdbc:sqlite:" + "data/data.sqlite3";
+    conn = DriverManager.getConnection(urlToDB);
     // these two lines tell the database to enforce foreign keys during operations, and should be present
     Statement stat = conn.createStatement();
     stat.executeUpdate("PRAGMA foreign_keys=ON;");
 
     PreparedStatement prep;
 
-    prep = conn.prepareStatement("CREATE TABLE corpus("
+    prep = conn.prepareStatement("CREATE TABLE IF NOT EXISTS corpus("
         + "id INTEGER,"
         + "filename TEXT,"
-        + "PRIMARY KEY (id),"
-        + "IF NOT EXISTS);");
+        + "PRIMARY KEY (id));");
     prep.executeUpdate();
 
-    prep = conn.prepareStatement("CREATE TABLE word("
+    prep = conn.prepareStatement("CREATE TABLE IF NOT EXISTS word("
         + "word TEXT,"
         + "corpus_id INTEGER,"
         + "PRIMARY KEY (word),"
         + "FOREIGN KEY (corpus_id) REFERENCES corpus(id)"
-        + "ON DELETE CASCADE ON UPDATE CASCADE"
-        + "IF NOT EXISTS);");
+        + "ON DELETE CASCADE ON UPDATE CASCADE);");
     prep.executeUpdate();
   }
 
